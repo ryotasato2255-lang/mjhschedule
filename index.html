@@ -430,187 +430,109 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm 8mm 8mm 8mm;
+    margin: 10mm 8mm 10mm 8mm;
   }
 
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-  /* ── 非表示 ── */
+  /* 非表示 */
   .hd-bubbles, .btn-generate, .btn-copy, .btn-reset, .btn-print,
-  .s-chk, .td-memo, #genInfo, #copyMsg, .card-ttl .ttl-icon,
-  .empty, .divider,
+  .s-chk, .td-memo, #genInfo, #copyMsg, #beforeMsg, #afterMsg,
+  .card-ttl .ttl-icon, .empty, .divider,
   .card > div[style*="grid-template-columns:1fr 1fr 1fr"],
   .btn-row { display: none !important; }
 
-  body {
-    background: #fff !important;
-    font-size: 8px !important;
-    line-height: 1.3 !important;
-  }
-  body::before { display: none !important; }
+  body { background:#fff !important; font-size:9px !important; line-height:1.4 !important; }
+  body::before { display:none !important; }
 
-  /* ヘッダー：最小化 */
-  .hd {
-    background: linear-gradient(135deg,#2a8abf,#5bbde4) !important;
-    box-shadow: none !important;
-  }
-  .hd-inner {
-    padding: 6px 14px !important;
-    gap: 8px !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-  }
-  .hd-mascot { font-size: 18px !important; }
-  .hd-inner h1 { font-size: 11px !important; }
-  .hd-inner p  { font-size: 8px !important; margin-top:1px !important; }
-  .cloud-border {
-    padding: 3px 8px !important;
-    box-shadow: -6px -3px 0 3px rgba(255,255,255,.92),6px -3px 0 3px rgba(255,255,255,.92),0 3px 0 3px rgba(255,255,255,.92) !important;
-  }
-  .cloud-border img { height: 14px !important; }
+  /* ヘッダー */
+  .hd { background:linear-gradient(135deg,#2a8abf,#5bbde4) !important; box-shadow:none !important; }
+  .hd-inner { padding:7px 14px !important; gap:8px !important; flex-direction:row !important; justify-content:space-between !important; }
+  .hd-mascot { font-size:20px !important; }
+  .hd-inner h1 { font-size:12px !important; }
+  .hd-inner p  { font-size:8px !important; }
+  .cloud-border { padding:3px 8px !important; box-shadow:-6px -3px 0 3px rgba(255,255,255,.92),6px -3px 0 3px rgba(255,255,255,.92),0 3px 0 3px rgba(255,255,255,.92) !important; }
+  .cloud-border img { height:14px !important; }
 
-  /* body */
-  .body { padding: 4px 0 0 !important; max-width: 100% !important; }
+  .body { padding:4px 0 0 !important; max-width:100% !important; }
 
-  /* カード共通：余白最小化 */
-  .card {
-    background: #fff !important;
-    border: 1px solid #cce4f0 !important;
-    border-radius: 5px !important;
-    padding: 5px 8px !important;
-    margin-bottom: 4px !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    break-inside: avoid;
-  }
-  .card::before { display: none !important; }
-  .card-ttl {
-    font-size: 9px !important;
-    font-weight: 700 !important;
-    margin-bottom: 4px !important;
-    color: #2a8abf !important;
-    border-bottom: 1px solid #cce4f0 !important;
-    padding-bottom: 3px !important;
-  }
+  /* カード */
+  .card { background:#fff !important; border:1px solid #cce4f0 !important; border-radius:5px !important; padding:6px 10px !important; margin-bottom:5px !important; box-shadow:none !important; backdrop-filter:none !important; }
+  .card::before { display:none !important; }
+  .card-ttl { font-size:10px !important; font-weight:700 !important; margin-bottom:5px !important; color:#2a8abf !important; border-bottom:1px solid #cce4f0 !important; padding-bottom:3px !important; }
 
-  /* 入力カード：お客様名と契約日だけ横並び */
-  .inp-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 4px !important;
-    margin-bottom: 4px !important;
-  }
-  .field label { font-size: 7px !important; color: #5a8aaa !important; margin-bottom: 2px !important; }
-  .field label::before { display: none !important; }
-  .field input {
-    border: 1px solid #cce4f0 !important;
-    border-radius: 4px !important;
-    padding: 3px 6px !important;
-    font-size: 9px !important;
-    background: #f8fcff !important;
-    box-shadow: none !important;
-  }
+  /* 入力カード */
+  .inp-grid { display:grid !important; grid-template-columns:1fr 1fr !important; gap:6px !important; margin-bottom:6px !important; }
+  .field label { font-size:8px !important; color:#5a8aaa !important; margin-bottom:2px !important; }
+  .field label::before { display:none !important; }
+  .field input { border:1px solid #cce4f0 !important; border-radius:4px !important; padding:3px 7px !important; font-size:10px !important; background:#f8fcff !important; box-shadow:none !important; }
 
-  /* サマリーバー：横1列6項目 */
-  .sum-bar {
-    display: grid !important;
-    grid-template-columns: repeat(6, 1fr) !important;
-    gap: 3px !important;
-    margin-bottom: 4px !important;
-  }
-  .sc {
-    border-radius: 4px !important;
-    padding: 4px 5px !important;
-    box-shadow: none !important;
-    border: 1px solid #cce4f0 !important;
-    background: #f8fcff !important;
-  }
-  .sc:hover { transform: none !important; }
-  .sc.key {
-    background: linear-gradient(135deg,#2a8abf,#5bbde4) !important;
-    border-color: transparent !important;
-  }
-  .sc.accent { background: #fffbe8 !important; border-color: #ffd080 !important; }
-  .sc-l { font-size: 7px !important; margin-bottom: 2px !important; }
-  .sc-v { font-size: 10px !important; }
-  .sc-s { font-size: 7px !important; }
+  /* サマリー */
+  .sum-bar { display:grid !important; grid-template-columns:repeat(6,1fr) !important; gap:4px !important; margin-bottom:6px !important; break-inside:avoid !important; }
+  .sc { border-radius:4px !important; padding:4px 6px !important; box-shadow:none !important; border:1px solid #cce4f0 !important; background:#f8fcff !important; }
+  .sc:hover { transform:none !important; }
+  .sc.key    { background:linear-gradient(135deg,#2a8abf,#5bbde4) !important; border-color:transparent !important; }
+  .sc.accent { background:#fffbe8 !important; border-color:#ffd080 !important; }
+  .sc-l { font-size:7px !important; margin-bottom:1px !important; }
+  .sc-v { font-size:11px !important; }
+  .sc-s { font-size:7px !important; }
 
-  /* ── テーブル：超コンパクト ── */
-  .tbl-wrap { overflow: visible !important; }
-  #schedCard { break-inside: auto !important; }
+  /* ── テーブル：全行をページまたいで印刷 ── */
+  #schedCard { break-before:auto !important; break-inside:auto !important; }
+  .tbl-wrap  { overflow:visible !important; }
+
   table.st {
-    width: 100% !important;
-    font-size: 7.5px !important;
-    border-collapse: collapse !important;
-    min-width: unset !important;
-    table-layout: fixed !important;
+    width:100% !important;
+    font-size:8.5px !important;
+    border-collapse:collapse !important;
+    min-width:unset !important;
+    table-layout:fixed !important;
   }
 
-  /* 列幅を固定して収める */
-  .st colgroup col.c-no   { width: 22px !important; }
-  .st colgroup col.c-icon { width: 18px !important; }
-  .st colgroup col.c-name { width: auto !important; }
-  .st colgroup col.c-days { width: 52px !important; }
-  .st colgroup col.c-date { width: 72px !important; }
-  .st colgroup col.c-wd   { width: 26px !important; }
-  .st colgroup col.c-cd   { width: 44px !important; }
-
+  /* テーブルヘッダーを各ページ先頭に繰り返す */
+  .st thead { display:table-header-group !important; }
   .st thead th {
-    background: linear-gradient(135deg,#2a8abf,#5bbde4) !important;
-    padding: 4px 4px !important;
-    font-size: 7px !important;
-    position: static !important;
-    white-space: nowrap !important;
+    background:linear-gradient(135deg,#2a8abf,#5bbde4) !important;
+    color:#fff !important;
+    padding:5px 5px !important;
+    font-size:8px !important;
+    position:static !important;
+    white-space:nowrap !important;
   }
-  .st thead th:first-child { border-radius: 3px 0 0 0 !important; }
-  .st thead th:last-child  { border-radius: 0 3px 0 0 !important; }
+  .st thead th:first-child { border-radius:3px 0 0 0 !important; }
+  .st thead th:last-child  { border-radius:0 3px 0 0 !important; }
 
   /* フェーズ区切り行 */
-  .st tr.ph-row td {
-    padding: 3px 6px !important;
-    background: #ddeef8 !important;
-    font-size: 7.5px !important;
-  }
-  .ph-label { gap: 4px !important; }
-  .ph-pill  { font-size: 7px !important; padding: 1px 5px !important; }
+  .st tr.ph-row { break-inside:avoid !important; }
+  .st tr.ph-row td { padding:4px 7px !important; background:#ddeef8 !important; font-size:8.5px !important; }
+  .ph-label { gap:5px !important; }
+  .ph-pill  { font-size:8px !important; padding:1px 6px !important; }
 
-  /* データ行：行高を最小化 */
+  /* データ行：1行が途中で切れない */
+  .st tbody tr.data-row { break-inside:avoid !important; }
   .st tbody tr.data-row td {
-    padding: 2px 4px !important;
-    border-bottom: 1px solid #e8f4fc !important;
-    background: #fff !important;
-    vertical-align: middle !important;
+    padding:4px 5px !important;
+    border-bottom:1px solid #e0f0f8 !important;
+    background:#fff !important;
+    vertical-align:middle !important;
   }
-  .st tbody tr.data-row:nth-child(even) td { background: #f8fcff !important; }
-  .st tbody tr.ms td {
-    background: #fffbe8 !important;
-    border-left: 2px solid #f5a623 !important;
-  }
-  .st tbody tr.kouji-row td {
-    background: #e8f4ff !important;
-    border-left: 2px solid #2a8abf !important;
-  }
-  .st tbody tr.done { display: none !important; } /* 完了済みは非表示 */
+  .st tbody tr.data-row:nth-child(even) td { background:#f8fcff !important; }
+  .st tbody tr.ms td        { background:#fffbe8 !important; border-left:3px solid #f5a623 !important; }
+  .st tbody tr.kouji-row td { background:#e8f4ff !important; border-left:3px solid #2a8abf !important; }
 
-  .s-nm  { font-size: 8px !important; line-height: 1.2 !important; }
-  .s-nm.bold { font-weight: 700 !important; }
-  .s-sub { display: none !important; } /* サブテキストは省略 */
-  .s-days-cell { font-size: 7px !important; }
-  .wdb   { font-size: 7px !important; padding: 1px 3px !important; }
-  .cdt   { font-size: 7px !important; }
+  .s-nm      { font-size:9px !important; line-height:1.3 !important; }
+  .s-nm.bold { font-weight:700 !important; }
+  .s-sub     { font-size:7.5px !important; color:#7aaac8 !important; }
+  .s-days-cell { font-size:8px !important; }
+  .wdb { font-size:8px !important; padding:1px 4px !important; }
+  .cdt { font-size:8px !important; }
 
-  /* 日付inputをテキスト風に */
   .s-di {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    width: 100% !important;
-    box-shadow: none !important;
-    font-size: 8px !important;
-    cursor: default !important;
+    border:none !important; background:transparent !important;
+    padding:0 !important; width:100% !important;
+    box-shadow:none !important; font-size:9px !important; cursor:default !important;
   }
 }
-
 @media(max-width:680px){
   .hd-inner{padding:14px 18px 12px;}
   .hd-badge{display:none;}
@@ -756,13 +678,17 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
     <hr class="divider">
 
     <div class="btn-row">
-      <button class="btn-generate" onclick="generate()">☁️ スケジュール生成</button>
-      <button class="btn-copy" id="btnCopy" onclick="copyText()">📋 テキストコピー</button>
+      <button class="btn-generate" onclick="generate()">☁️ ① スケジュール生成</button>
+      <button class="btn-copy"  id="btnCopy"  onclick="copyText()"     style="display:none">📋 テキストコピー</button>
       <button class="btn-print" id="btnPrint" onclick="window.print()" style="display:none">🖨️ A4印刷</button>
       <button class="btn-reset" onclick="resetAll()">↺ リセット</button>
     </div>
-    <div id="genInfo"></div>
-    <div id="copyMsg" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:700;">✅ コピーしました！メモ帳・LINE・チャットに貼り付けできます</div>
+    <div id="beforeMsg" style="margin-top:10px;font-size:12px;color:var(--sky-deep);font-weight:700;display:flex;align-items:center;gap:6px;">
+      ☝️ 契約日を入力して「① スケジュール生成」を押すと、印刷・コピーボタンが現れます
+    </div>
+    <div id="afterMsg"  style="margin-top:10px;font-size:12px;color:var(--green);font-weight:700;display:none;align-items:center;gap:6px;">
+      ✅ 生成完了！下にスケジュールが表示されました。「🖨️ A4印刷」で印刷できます
+    </div>
   </div>
 
   <!-- ── サマリー ── -->
@@ -904,6 +830,8 @@ function generate() {
   document.getElementById('btnCopy').style.display   = 'inline-flex';
   document.getElementById('btnPrint').style.display  = 'inline-flex';
   document.getElementById('copyMsg').style.display   = 'none';
+  document.getElementById('beforeMsg').style.display = 'none';
+  document.getElementById('afterMsg').style.display  = 'flex';
 
   const k2s = cfg.keiyakuToSinsei===70?'70日（標準）':`${cfg.keiyakuToSinsei}日`;
   const s2k = cfg.sinseiToKouji===99?'99日（標準）':`${cfg.sinseiToKouji}日`;
@@ -992,6 +920,8 @@ function resetAll() {
   ['contractDate','clientName'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('genInfo').textContent='';
   ['sumBar','schedCard','btnCopy','btnPrint','copyMsg'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('beforeMsg').style.display = 'flex';
+  document.getElementById('afterMsg').style.display  = 'none';
   document.getElementById('emptyState').style.display='block';
   document.getElementById('mainTbody').innerHTML='';
 }
