@@ -428,9 +428,10 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
 
 /* PRINT */
 @media print {
+  /* A3横向き・余白最小 */
   @page {
-    size: A4 portrait;
-    margin: 10mm 8mm 10mm 8mm;
+    size: A3 landscape;
+    margin: 8mm 8mm 8mm 8mm;
   }
 
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -442,96 +443,95 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
   .card > div[style*="grid-template-columns:1fr 1fr 1fr"],
   .btn-row { display: none !important; }
 
-  body { background:#fff !important; font-size:9px !important; line-height:1.4 !important; }
+  body { background:#fff !important; font-size:10px !important; line-height:1.4 !important; }
   body::before { display:none !important; }
 
   /* ヘッダー */
   .hd { background:linear-gradient(135deg,#2a8abf,#5bbde4) !important; box-shadow:none !important; }
-  .hd-inner { padding:7px 14px !important; gap:8px !important; flex-direction:row !important; justify-content:space-between !important; }
-  .hd-mascot { font-size:20px !important; }
-  .hd-inner h1 { font-size:12px !important; }
-  .hd-inner p  { font-size:8px !important; }
-  .cloud-border { padding:3px 8px !important; box-shadow:-6px -3px 0 3px rgba(255,255,255,.92),6px -3px 0 3px rgba(255,255,255,.92),0 3px 0 3px rgba(255,255,255,.92) !important; }
-  .cloud-border img { height:14px !important; }
+  .hd-inner { padding:7px 16px !important; flex-direction:row !important; justify-content:space-between !important; gap:10px !important; }
+  .hd-mascot { font-size:22px !important; }
+  .hd-inner h1 { font-size:13px !important; }
+  .hd-inner p  { font-size:9px !important; }
+  .cloud-border { padding:3px 8px !important; box-shadow:-6px -3px 0 3px rgba(255,255,255,.9),6px -3px 0 3px rgba(255,255,255,.9),0 3px 0 3px rgba(255,255,255,.9) !important; }
+  .cloud-border img { height:15px !important; }
 
   .body { padding:4px 0 0 !important; max-width:100% !important; }
 
   /* カード */
-  .card { background:#fff !important; border:1px solid #cce4f0 !important; border-radius:5px !important; padding:6px 10px !important; margin-bottom:5px !important; box-shadow:none !important; backdrop-filter:none !important; }
+  .card { background:#fff !important; border:1px solid #cce4f0 !important; border-radius:5px !important; padding:6px 10px !important; margin-bottom:5px !important; box-shadow:none !important; backdrop-filter:none !important; break-inside:avoid !important; }
   .card::before { display:none !important; }
   .card-ttl { font-size:10px !important; font-weight:700 !important; margin-bottom:5px !important; color:#2a8abf !important; border-bottom:1px solid #cce4f0 !important; padding-bottom:3px !important; }
 
-  /* 入力カード */
-  .inp-grid { display:grid !important; grid-template-columns:1fr 1fr !important; gap:6px !important; margin-bottom:6px !important; }
+  /* 入力カード：横並び */
+  .inp-grid { display:grid !important; grid-template-columns:1fr 1fr !important; gap:6px !important; margin-bottom:0 !important; }
   .field label { font-size:8px !important; color:#5a8aaa !important; margin-bottom:2px !important; }
   .field label::before { display:none !important; }
-  .field input { border:1px solid #cce4f0 !important; border-radius:4px !important; padding:3px 7px !important; font-size:10px !important; background:#f8fcff !important; box-shadow:none !important; }
+  .field input { border:1px solid #cce4f0 !important; border-radius:4px !important; padding:3px 8px !important; font-size:10px !important; background:#f8fcff !important; box-shadow:none !important; }
 
-  /* サマリー */
-  .sum-bar { display:grid !important; grid-template-columns:repeat(6,1fr) !important; gap:4px !important; margin-bottom:6px !important; break-inside:avoid !important; }
-  .sc { border-radius:4px !important; padding:4px 6px !important; box-shadow:none !important; border:1px solid #cce4f0 !important; background:#f8fcff !important; }
+  /* サマリー：1行 */
+  .sum-bar { display:grid !important; grid-template-columns:repeat(7,1fr) !important; gap:4px !important; margin-bottom:5px !important; break-inside:avoid !important; }
+  .sc { border-radius:4px !important; padding:5px 6px !important; box-shadow:none !important; border:1px solid #cce4f0 !important; background:#f8fcff !important; }
   .sc:hover { transform:none !important; }
   .sc.key    { background:linear-gradient(135deg,#2a8abf,#5bbde4) !important; border-color:transparent !important; }
   .sc.accent { background:#fffbe8 !important; border-color:#ffd080 !important; }
-  .sc-l { font-size:7px !important; margin-bottom:1px !important; }
-  .sc-v { font-size:11px !important; }
-  .sc-s { font-size:7px !important; }
+  .sc-l { font-size:8px !important; margin-bottom:1px !important; }
+  .sc-v { font-size:12px !important; }
+  .sc-s { font-size:8px !important; }
 
-  /* ── テーブル：全行をページまたいで印刷 ── */
-  #schedCard { break-before:auto !important; break-inside:auto !important; }
+  /* ── テーブル：A3横1枚に全行程 ── */
+  #schedCard { break-inside:avoid !important; }
   .tbl-wrap  { overflow:visible !important; }
 
   table.st {
     width:100% !important;
-    font-size:8.5px !important;
+    font-size:9.5px !important;
     border-collapse:collapse !important;
     min-width:unset !important;
     table-layout:fixed !important;
   }
 
-  /* テーブルヘッダーを各ページ先頭に繰り返す */
+  /* 列幅：A3横(約390mm有効幅)に最適化 */
+  .st colgroup col.c-no   { width:28px !important; }
+  .st colgroup col.c-icon { width:22px !important; }
+  .st colgroup col.c-name { width:auto !important; }
+  .st colgroup col.c-days { width:64px !important; }
+  .st colgroup col.c-date { width:90px !important; }
+  .st colgroup col.c-wd   { width:34px !important; }
+  .st colgroup col.c-cd   { width:60px !important; }
+
   .st thead { display:table-header-group !important; }
   .st thead th {
     background:linear-gradient(135deg,#2a8abf,#5bbde4) !important;
     color:#fff !important;
-    padding:5px 5px !important;
-    font-size:8px !important;
+    padding:6px 6px !important;
+    font-size:9px !important;
     position:static !important;
     white-space:nowrap !important;
   }
   .st thead th:first-child { border-radius:3px 0 0 0 !important; }
   .st thead th:last-child  { border-radius:0 3px 0 0 !important; }
 
-  /* フェーズ区切り行 */
+  /* フェーズ区切り */
   .st tr.ph-row { break-inside:avoid !important; }
-  .st tr.ph-row td { padding:4px 7px !important; background:#ddeef8 !important; font-size:8.5px !important; }
-  .ph-label { gap:5px !important; }
-  .ph-pill  { font-size:8px !important; padding:1px 6px !important; }
+  .st tr.ph-row td { padding:5px 8px !important; background:#ddeef8 !important; font-size:9.5px !important; }
+  .ph-label { gap:6px !important; }
+  .ph-pill  { font-size:9px !important; padding:2px 7px !important; }
 
-  /* データ行：1行が途中で切れない */
+  /* データ行 */
   .st tbody tr.data-row { break-inside:avoid !important; }
-  .st tbody tr.data-row td {
-    padding:4px 5px !important;
-    border-bottom:1px solid #e0f0f8 !important;
-    background:#fff !important;
-    vertical-align:middle !important;
-  }
+  .st tbody tr.data-row td { padding:5px 6px !important; border-bottom:1px solid #e0f0f8 !important; background:#fff !important; vertical-align:middle !important; }
   .st tbody tr.data-row:nth-child(even) td { background:#f8fcff !important; }
   .st tbody tr.ms td        { background:#fffbe8 !important; border-left:3px solid #f5a623 !important; }
   .st tbody tr.kouji-row td { background:#e8f4ff !important; border-left:3px solid #2a8abf !important; }
 
-  .s-nm      { font-size:9px !important; line-height:1.3 !important; }
+  .s-nm      { font-size:10px !important; line-height:1.3 !important; }
   .s-nm.bold { font-weight:700 !important; }
-  .s-sub     { font-size:7.5px !important; color:#7aaac8 !important; }
-  .s-days-cell { font-size:8px !important; }
-  .wdb { font-size:8px !important; padding:1px 4px !important; }
-  .cdt { font-size:8px !important; }
+  .s-sub     { font-size:8px !important; color:#7aaac8 !important; }
+  .s-days-cell { font-size:9px !important; }
+  .wdb { font-size:9px !important; padding:1px 5px !important; }
+  .cdt { font-size:9px !important; }
 
-  .s-di {
-    border:none !important; background:transparent !important;
-    padding:0 !important; width:100% !important;
-    box-shadow:none !important; font-size:9px !important; cursor:default !important;
-  }
+  .s-di { border:none !important; background:transparent !important; padding:0 !important; width:100% !important; box-shadow:none !important; font-size:10px !important; cursor:default !important; }
 }
 @media(max-width:680px){
   .hd-inner{padding:14px 18px 12px;}
@@ -680,14 +680,14 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
     <div class="btn-row">
       <button class="btn-generate" onclick="generate()">☁️ ① スケジュール生成</button>
       <button class="btn-copy"  id="btnCopy"  onclick="copyText()"     style="display:none">📋 テキストコピー</button>
-      <button class="btn-print" id="btnPrint" onclick="window.print()" style="display:none">🖨️ A4印刷</button>
+      <button class="btn-print" id="btnPrint" onclick="window.print()" style="display:none">🖨️ A3印刷（1枚）</button>
       <button class="btn-reset" onclick="resetAll()">↺ リセット</button>
     </div>
     <div id="beforeMsg" style="margin-top:10px;font-size:12px;color:var(--sky-deep);font-weight:700;display:flex;align-items:center;gap:6px;">
-      ☝️ 契約日を入力して「① スケジュール生成」を押すと、印刷・コピーボタンが現れます
+      ☝️ 契約日を入力して「① スケジュール生成」を押してください
     </div>
     <div id="afterMsg"  style="margin-top:10px;font-size:12px;color:var(--green);font-weight:700;display:none;align-items:center;gap:6px;">
-      ✅ 生成完了！下にスケジュールが表示されました。「🖨️ A4印刷」で印刷できます
+      ✅ 生成完了！「🖨️ A3印刷」ボタンで全工程を1枚に印刷できます
     </div>
   </div>
 
