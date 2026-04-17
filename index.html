@@ -225,6 +225,7 @@ body::before{
   transform:translateY(-1px);
 }
 
+
 .divider{border:none;border-top:2px dashed var(--fluffy);margin:18px 0;}
 
 /* ── BUTTONS ── */
@@ -264,24 +265,7 @@ body::before{
   font-weight:700; cursor:pointer; padding:11px 16px; transition:all .2s;
 }
 .btn-reset:hover{border-color:var(--sky-lt);color:var(--sky-deep);}
-.btn-weekend{
-  display:none;
-  align-items:center; gap:6px;
-  background: rgba(255,255,255,.9);
-  color: var(--ink-mid);
-  border: 2px solid var(--fluffy); border-radius:16px;
-  padding:10px 18px;
-  font-family:'Noto Sans JP',sans-serif;
-  font-size:12px; font-weight:700;
-  cursor:pointer; transition:all .2s;
-}
-.btn-weekend:hover{ border-color:var(--sky); color:var(--sky-deep); }
-.btn-weekend.on{
-  background: linear-gradient(135deg,#f59e0b,#f5a623);
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(245,166,35,.4);
-}
+
 .btn-print{
   display:none;
   align-items:center; gap:6px;
@@ -575,7 +559,18 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
     <hr class="divider">
 
     <!-- 工期選択 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+
+      <div>
+        <div class="sec-label"><span class="sl-icon">📐</span>契約 → 基本設計完了</div>
+        <div class="toggle-group" id="tgl-basic">
+          <button class="tgl active" data-val="28" onclick="selectTgl('basic',this)">28日（標準）</button>
+          <button class="tgl"        data-val="40" onclick="selectTgl('basic',this)">40日</button>
+          <button class="tgl"        data-val="60" onclick="selectTgl('basic',this)">60日</button>
+          <button class="tgl"        data-val="80" onclick="selectTgl('basic',this)">80日</button>
+        </div>
+        <div class="note" style="margin-top:6px" id="note-basic">現在：28日（標準）を設定中</div>
+      </div>
 
       <div>
         <div class="sec-label"><span class="sl-icon">📋</span>ご契約 → 申請プラン確定</div>
@@ -623,16 +618,14 @@ table.st{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;min
 
     <div class="btn-row">
       <button class="btn-generate" onclick="generate()">☁️ ① スケジュール生成</button>
-      <button class="btn-weekend" id="btnWeekend" onclick="toggleWeekend()" style="display:none">📅 土日打合せモード：OFF</button>
-      <button class="btn-copy"  id="btnCopy"  onclick="copyText()"     style="display:none">📋 テキストコピー</button>
-      <button class="btn-print" id="btnPrint" onclick="window.print()" style="display:none">🖨️ A3印刷（1枚）</button>
+      <button class="btn-copy"  id="btnCopy"  onclick="copyText()" style="display:none">📋 テキストコピー</button>
       <button class="btn-reset" onclick="resetAll()">↺ リセット</button>
     </div>
     <div id="beforeMsg" style="margin-top:10px;font-size:12px;color:var(--sky-deep);font-weight:700;display:flex;align-items:center;gap:6px;">
       ☝️ 契約日を入力して「① スケジュール生成」を押してください
     </div>
     <div id="afterMsg"  style="margin-top:10px;font-size:12px;color:var(--green);font-weight:700;display:none;align-items:center;gap:6px;">
-      ✅ 生成完了！「🖨️ A3印刷」ボタンで全工程を1枚に印刷できます
+      ✅ 生成完了！各打合せは前回から最低7日間隔で自動調整されています
     </div>
   </div>
 
@@ -683,16 +676,20 @@ const PHASES = [
 ];
 
 let cfg = {
-  keiyakuToSinsei: 70,
-  sinseiToKouji:   99,
-  kouji:          240,
+  keiyakuToBasic:  28,  // 契約→基本設計完了（日数）標準28日
+  keiyakuToSinsei: 70,  // 契約→申請プラン確定（日数）標準70日
+  sinseiToKouji:   99,  // 申請確定→着工（日数）標準99日
+  kouji:          240,  // 着工〜引渡し（日数）標準8ヶ月
 };
 
 function selectTgl(group, el) {
   document.querySelectorAll(`#tgl-${group} .tgl`).forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   const val = parseInt(el.dataset.val);
-  if (group === 'keiyaku') {
+  if (group === 'basic') {
+    cfg.keiyakuToBasic = val;
+    document.getElementById('note-basic').textContent = `現在：${val}日${val===28?'（標準）':''}を設定中`;
+  } else if (group === 'keiyaku') {
     cfg.keiyakuToSinsei = val;
     document.getElementById('note-keiyaku').textContent = `現在：${val}日${val===70?'（標準）':''}を設定中`;
   } else if (group === 'sinsei') {
@@ -702,13 +699,15 @@ function selectTgl(group, el) {
     cfg.kouji = val;
     document.getElementById('note-kouji').textContent = `現在：${Math.round(val/30)}ヶ月（${val}日）を設定中`;
   }
+  // スケジュールが生成済みなら自動で再生成
+  if (rows.length > 0) generate();
 }
 
-function buildMaster(keiyakuToSinsei, sinseiToKouji, koujiDays) {
-  const KEIYAKU    = -(keiyakuToSinsei + sinseiToKouji);
-  const BASIC_END  = -141;
-  const SINSEI_END = -sinseiToKouji;
-  const SAISHUU    = -71;
+function buildMaster(keiyakuToBasic, keiyakuToSinsei, sinseiToKouji, koujiDays) {
+  const KEIYAKU    = -(keiyakuToSinsei + sinseiToKouji);  // ■ ご契約
+  const BASIC_END  = -(sinseiToKouji + keiyakuToSinsei - keiyakuToBasic); // ★ 基本設計完了（可変）
+  const SINSEI_END = -sinseiToKouji;                       // ★ 申請プラン確定
+  const SAISHUU    = -71;                                  // ■ 最終確認お打合せ（固定）
 
   const sinseiSpan = SINSEI_END - BASIC_END;
   const s = (n) => BASIC_END + Math.round(sinseiSpan * n / 8);
@@ -720,15 +719,16 @@ function buildMaster(keiyakuToSinsei, sinseiToKouji, koujiDays) {
   const c3 = cBase + Math.round(cSpan * 0.66);
   const c4 = SAISHUU;
 
-  const isStd = keiyakuToSinsei === 70 && sinseiToKouji === 99;
+  const isStd = keiyakuToBasic === 28 && keiyakuToSinsei === 70 && sinseiToKouji === 99;
   const sinseiLabel = `マイルストーン${isStd?'（標準）':''} ／ 契約から${keiyakuToSinsei}日後・着工${sinseiToKouji}日前`;
+  const basicLabel  = `マイルストーン（契約から${keiyakuToBasic}日後・着工${Math.abs(BASIC_END)}日前）`;
 
   return [
     { phase:'basic',    type:'ms',   icon:'■', name:'ご契約',               sub:`工期計算の起点（着工${Math.abs(KEIYAKU)}日前）`, daysFromKouji:KEIYAKU,       isKeiyaku:true },
     { phase:'basic',    type:'mtg',  icon:'▪', name:'基本設計',             sub:'ヒアリング・敷地分析',                           daysFromKouji:KEIYAKU+7    },
     { phase:'basic',    type:'mtg',  icon:'▪', name:'基本設計確定お打合せ', sub:'プラン確認・修正',                               daysFromKouji:KEIYAKU+21   },
     { phase:'basic',    type:'mtg',  icon:'▪', name:'確認書サイン',          sub:'基本設計承認署名',                               daysFromKouji:BASIC_END-2  },
-    { phase:'basic',    type:'flag', icon:'★', name:'基本設計完了',          sub:'マイルストーン（着工141日前・固定）',            daysFromKouji:BASIC_END,    isFlag:true },
+    { phase:'basic',    type:'flag', icon:'★', name:'基本設計完了',          sub:basicLabel,                                      daysFromKouji:BASIC_END,    isFlag:true },
     { phase:'sinsei',   type:'mtg',  icon:'▪', name:'申請プランお打合せ①', sub:'照明計画の打合せ',     daysFromKouji:s(1) },
     { phase:'sinsei',   type:'mtg',  icon:'▪', name:'申請プランお打合せ②', sub:'電気レイアウト打合せ', daysFromKouji:s(2) },
     { phase:'sinsei',   type:'mtg',  icon:'▪', name:'申請プランお打合せ③', sub:'設備・仕様の確認',     daysFromKouji:s(3) },
@@ -753,75 +753,43 @@ function buildMaster(keiyakuToSinsei, sinseiToKouji, koujiDays) {
   ];
 }
 
-let rows = [];
-let weekendMode = false;
-
 // =============================================
-// 土日打合せモード
+// 打合せ最低間隔ルール
+// ・type==='mtg' のステップを対象に前回から minDays 日以上あける
+// ・次のマイルストーン（ms/flag）に間に合わない場合は同日にまとめる
+// ・打合せが延びた場合、後続の打合せも連動してずれる
 // =============================================
+function applyMinInterval(rows, minDays) {
+  // 「次のマイルストーン日」を各打合せごとに求めるヘルパー
+  function nextMsDate(fromIdx) {
+    for (let i = fromIdx + 1; i < rows.length; i++) {
+      if (rows[i].type === 'ms' || rows[i].type === 'flag') return rows[i].date.getTime();
+    }
+    return Infinity;
+  }
 
-// 指定日から直近の土曜か日曜に移動（前後どちらか近い方）
-function toNearestWeekend(d) {
-  const day = d.getDay(); // 0=日, 6=土
-  if (day === 0 || day === 6) return new Date(d); // すでに土日
-  // 前の土日と次の土日を比較して近い方
-  const prevSat = addDays(d, -(day === 0 ? 1 : day - 6 < 0 ? day + 1 : day - 6));
-  // 前の土曜
-  const daysToLastSat = day >= 6 ? 0 : day + 1; // 月=2,火=3,...金=6
-  const lastSat = addDays(d, -(day === 0 ? 1 : day));
-  const nextSat = addDays(d, 6 - day);
-  // 前の日曜
-  const lastSun = addDays(d, -day);
-  const nextSun = addDays(d, 7 - day);
+  let prevMs = null; // 前回打合せ日（ミリ秒）
 
-  // 候補：前土曜・前日曜・次土曜・次日曜
-  const candidates = [lastSat, lastSun, nextSat, nextSun].filter(c => {
-    const cd = c.getDay();
-    return cd === 0 || cd === 6;
-  });
-  // 日付差が最小のものを選ぶ
-  candidates.sort((a, b) => Math.abs(a - d) - Math.abs(b - d));
-  return candidates[0];
-}
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i].type !== 'mtg') continue;
 
-function toggleWeekend() {
-  weekendMode = !weekendMode;
-  const btn = document.getElementById('btnWeekend');
+    const origMs  = rows[i].date.getTime();
+    const ceilMs  = nextMsDate(i);           // 次のマイルストーン（上限）
+    const minMs   = prevMs !== null ? prevMs + minDays * 86400000 : origMs;
+    // 候補 = max(元の日付, 前回+7日)
+    let candMs    = Math.max(origMs, minMs);
 
-  if (weekendMode) {
-    btn.classList.add('on');
-    btn.textContent = '📅 土日打合せモード：ON';
-    // 打合せ（type==='mtg'）の日付を直近土日に変換
-    rows.forEach((r, i) => {
-      if (r.type === 'mtg') {
-        const newDate = toNearestWeekend(r.date);
-        r.date = newDate;
-        r.edited = true;
-        // DOM更新
-        const inp = document.getElementById(`di_${i}`);
-        if (inp) { inp.value = toInputDate(newDate); inp.classList.add('edited'); }
-        const wd = document.getElementById(`wd_${i}`);
-        if (wd) { wd.className = `wdb ${wdClass(newDate)}`; wd.textContent = getWd(newDate); }
-        const cd = document.getElementById(`cd_${i}`);
-        if (cd) { const c = countdown(newDate); cd.className = `cdt ${c.cls}`; cd.textContent = c.text; }
-      }
-    });
-  } else {
-    btn.classList.remove('on');
-    btn.textContent = '📅 土日打合せモード：OFF';
-    // 元の自動計算日付に戻す（再生成）
-    const contractVal = document.getElementById('contractDate').value;
-    if (!contractVal) return;
-    const contractDate  = parseDate(contractVal);
-    const totalToKouji  = cfg.keiyakuToSinsei + cfg.sinseiToKouji;
-    const koujiDate     = addDays(contractDate, totalToKouji);
-    const master        = buildMaster(cfg.keiyakuToSinsei, cfg.sinseiToKouji, cfg.kouji);
-    rows = master.map((s, i) => ({
-      ...s, idx:i, date:addDays(koujiDate, s.daysFromKouji), checked:false, memo: rows[i]?.memo||'', edited:false
-    }));
-    renderTable();
+    // 上限を超える場合は前回と同日にまとめる（同日複数打合せ）
+    if (candMs >= ceilMs) {
+      candMs = prevMs !== null ? prevMs : ceilMs - 86400000;
+    }
+
+    rows[i].date = new Date(candMs);
+    prevMs = candMs;
   }
 }
+
+let rows = [];
 
 function generate() {
   const contractVal = document.getElementById('contractDate').value;
@@ -829,11 +797,15 @@ function generate() {
   const contractDate = parseDate(contractVal);
   const totalToKouji = cfg.keiyakuToSinsei + cfg.sinseiToKouji;
   const koujiDate    = addDays(contractDate, totalToKouji);
-  const master       = buildMaster(cfg.keiyakuToSinsei, cfg.sinseiToKouji, cfg.kouji);
+  const master       = buildMaster(cfg.keiyakuToBasic, cfg.keiyakuToSinsei, cfg.sinseiToKouji, cfg.kouji);
 
   rows = master.map((s,i) => ({ ...s, idx:i, date:addDays(koujiDate,s.daysFromKouji), checked:false, memo:'', edited:false }));
 
   const clientName = document.getElementById('clientName').value.trim() || 'お客様';
+
+  // ── 打合せ7日間隔ルールを適用 ──
+  applyMinInterval(rows, 7);
+
   renderSummary(clientName, contractDate, koujiDate);
   renderTable();
 
@@ -841,21 +813,15 @@ function generate() {
   document.getElementById('schedCard').style.display = 'block';
   document.getElementById('emptyState').style.display= 'none';
   document.getElementById('btnCopy').style.display    = 'inline-flex';
-  document.getElementById('btnPrint').style.display   = 'inline-flex';
-  document.getElementById('btnWeekend').style.display = 'inline-flex';
   document.getElementById('copyMsg').style.display    = 'none';
   document.getElementById('beforeMsg').style.display  = 'none';
   document.getElementById('afterMsg').style.display   = 'flex';
-  // 土日モードをリセット
-  weekendMode = false;
-  const wb = document.getElementById('btnWeekend');
-  wb.classList.remove('on');
-  wb.textContent = '📅 土日打合せモード：OFF';
 
   const k2s = cfg.keiyakuToSinsei===70?'70日（標準）':`${cfg.keiyakuToSinsei}日`;
   const s2k = cfg.sinseiToKouji===99?'99日（標準）':`${cfg.sinseiToKouji}日`;
   document.getElementById('genInfo').textContent =
     `生成: ${fmtFull(new Date())}　契約 ${fmtDate(contractDate)} → 着工 ${fmtDate(koujiDate)}（契約から${totalToKouji}日後）　契約〜申請確定 ${k2s} ／ 申請確定〜着工 ${s2k} ／ 工期 ${Math.round(cfg.kouji/30)}ヶ月`;
+
 }
 
 function renderSummary(clientName, contractDate, koujiDate) {
@@ -938,8 +904,7 @@ function resetAll() {
   rows=[];
   ['contractDate','clientName'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('genInfo').textContent='';
-  ['sumBar','schedCard','btnCopy','btnPrint','btnWeekend','copyMsg'].forEach(id=>document.getElementById(id).style.display='none');
-  weekendMode = false;
+  ['sumBar','schedCard','btnCopy','copyMsg'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('beforeMsg').style.display = 'flex';
   document.getElementById('afterMsg').style.display  = 'none';
   document.getElementById('emptyState').style.display='block';
